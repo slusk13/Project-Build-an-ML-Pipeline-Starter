@@ -60,9 +60,9 @@ def go(args):
     y = X.pop("price")  # this removes the column "price" from X and puts it into y
 
     logger.info(f"Minimum price: {y.min()}, Maximum price: {y.max()}")
-
+    stratify = X[args.stratify_by] if args.stratify_by != "none" else None
     X_train, X_val, y_train, y_val = train_test_split(
-        X, y, test_size=args.val_size, stratify=X[args.stratify_by], random_state=args.random_seed
+        X, y, test_size=args.val_size, stratify=stratify, random_state=args.random_seed
     )
 
     logger.info("Preparing sklearn pipeline")
@@ -92,7 +92,7 @@ def go(args):
         shutil.rmtree("random_forest_dir")
 
     # Save the sk_pipe pipeline as a mlflow.sklearn model in the directory "random_forest_dir"
-    signature = infer_signature(sk_pipe.transform(X_val), y_pred)
+    signature = infer_signature(X_val, y_pred)
     mlflow.sklearn.save_model(
         sk_pipe,
         "random_forest_dir",
