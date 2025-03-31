@@ -23,7 +23,6 @@ import wandb
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.pipeline import Pipeline, make_pipeline
-from mlflow.models import infer_signature
 
 
 def delta_date_feature(dates):
@@ -92,11 +91,9 @@ def go(args):
         shutil.rmtree("random_forest_dir")
 
     # Save the sk_pipe pipeline as a mlflow.sklearn model in the directory "random_forest_dir"
-    signature = infer_signature(X_val, y_pred)
     mlflow.sklearn.save_model(
         sk_pipe,
         "random_forest_dir",
-        signature=signature,
         input_example=X_train.iloc[:5]
     )
 
