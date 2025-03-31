@@ -92,10 +92,11 @@ def go(args):
         shutil.rmtree("random_forest_dir")
 
     # Save the sk_pipe pipeline as a mlflow.sklearn model in the directory "random_forest_dir"
+    signature = infer_signature(sk_pipe.transform(X_val), y_pred)
     mlflow.sklearn.save_model(
         sk_pipe,
         "random_forest_dir",
-        signature=infer_signature(X_val, y_pred),
+        signature=signature,
         input_example=X_train.iloc[:5]
     )
 
